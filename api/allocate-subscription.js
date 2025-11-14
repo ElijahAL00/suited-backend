@@ -26,6 +26,7 @@ async function ensureUserExists(userId) {
     return;
   }
 
+  // Create user with 0 credits initially
   await fetch(`${SUPABASE_URL}/rest/v1/users`, {
     method: "POST",
     headers: {

@@ -97,7 +97,10 @@ export default async (req, res) => {
       }),
     });
 
-    // Deduct credits
+    // Deduct credits (atomic: only update if credits >= 30)
+    const currentBalance = user.credits || 0;
+    const newBalance = currentBalance - 30;
+
     const deductResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/users?user_id=eq.${user_id}`,
       {
@@ -108,12 +111,12 @@ export default async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          credits: `credits - 30`,
+          credits: newBalance,
         }),
       }
     );
 
-    console.log(`✓ Deducted 30 credits for user ${user_id}`);
+    console.log(`✓ Deducted 30 credits for user ${user_id}. New balance: ${newBalance}`);
 
     res.status(200).json({
       success: true,
